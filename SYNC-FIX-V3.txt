@@ -1,0 +1,7 @@
+MY GIRL subtitle sync V3
+
+- Subtitle timing is locked to HTMLAudioElement.currentTime.
+- First section kept from the user-approved timing.
+- Verse 2 / Pre-Chorus / Chorus 2 aligned from the repeated audio waveform (+48.98s).
+- Bridge and later choruses retimed to the actual section boundaries.
+- Final lyric clears before the instrumental outro.

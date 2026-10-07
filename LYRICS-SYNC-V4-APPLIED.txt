@@ -1,0 +1,3 @@
+Applied V4 Termux Lyrics Aligner timings to Spotify/Rytm lyrics player.
+Cues applied: 43
+Source method: whisper.cpp DTW + piecewise anchor interpolation v4

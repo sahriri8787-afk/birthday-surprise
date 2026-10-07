@@ -1,0 +1,6 @@
+English-only Spotify/Rytm lyrics build.
+- Persian lyric display removed.
+- Existing English timestamps preserved from ULTRA-SYNC backup.
+- Active lyric visual transition reduced to near-instant (0.06s) so correct timestamps do not look late.
+- Smooth scrolling remains enabled.
+- Cue count: 43

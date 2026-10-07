@@ -1,0 +1,4 @@
+Final subtitle correction:
+- first lyric cue fixed at exactly 8.500s
+- every following cue shifted 0.500s earlier
+- total cues updated: 43

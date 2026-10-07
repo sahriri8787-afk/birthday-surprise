@@ -1,0 +1,3 @@
+My Girl subtitle correction
+All subtitle cue times shifted 1.500 seconds earlier.
+Updated cues: 43

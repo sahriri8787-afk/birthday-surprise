@@ -1,0 +1,1 @@
+Lyrics UI rebuilt as a scrolling bilingual player. Active English+Persian cue is bright/glossy; adjacent cues are dimmed; playback is locked to audio.currentTime; latest -1.5s timing offset retained.

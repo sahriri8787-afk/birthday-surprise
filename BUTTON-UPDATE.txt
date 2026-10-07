@@ -1,0 +1,4 @@
+Updated the music screen prediction button.
+- Moved to bottom-left corner.
+- Applied custom glossy rounded style.
+- Main label unchanged: پیش‌بینی امسال

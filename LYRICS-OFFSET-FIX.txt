@@ -1,0 +1,4 @@
+Spotify/Rytm V4 timing correction
+All lyric cue start times shifted later by +3.2 seconds.
+Reason: previous build displayed roughly one lyric line too early.
+Updated cues: 43

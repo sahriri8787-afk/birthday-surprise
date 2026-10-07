@@ -1,0 +1,4 @@
+Only "Do you pretend we were just friends?" was moved 0.500 seconds later.
+Old start: 21.600s
+New start: 22.100s
+All other lyric timestamps are unchanged.

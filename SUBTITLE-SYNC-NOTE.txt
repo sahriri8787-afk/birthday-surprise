@@ -1,0 +1,4 @@
+Spotify/Rytm lyrics player
+All lyric cue times moved 1.400 seconds earlier than the previous Spotify/Rytm build.
+Total shift from the originally calibrated timestamps: 2.900 seconds earlier.
+Updated cues: 43

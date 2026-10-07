@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06102f">
+<title>تنظیم دقیق زیرنویس My Girl</title>
+<style>
+@font-face{font-family:AmiriLocal;src:url("assets/Amiri-Regular.ttf") format("truetype");font-display:swap}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#020718;color:#fff;font-family:Tahoma,Arial,sans-serif}
+body{min-height:100dvh;background:#020718 url("assets/music-stars-bg.jpg") center/cover fixed no-repeat}
+body:before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(1,5,25,.28),rgba(1,5,25,.78)),radial-gradient(circle at 50% 20%,rgba(74,180,255,.26),transparent 36%);pointer-events:none}
+.app{position:relative;z-index:1;width:min(760px,100%);margin:auto;padding:max(18px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom))}
+.header{text-align:center;margin:2px 0 14px}
+h1{font-size:clamp(23px,6vw,34px);margin:0 0 6px;text-shadow:0 0 16px #7ed7ff,0 0 34px rgba(102,202,255,.7)}
+.sub{opacity:.85;font-size:13px;line-height:1.8}
+.panel{background:rgba(5,13,45,.68);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(12px);border-radius:24px;padding:14px;box-shadow:0 18px 45px rgba(0,0,0,.28)}
+.status{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:10px}
+.badge{padding:6px 10px;border-radius:999px;background:rgba(102,201,255,.14);border:1px solid rgba(145,222,255,.25)}
+.seekrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;direction:ltr}
+input[type=range]{width:100%}
+.time{font-family:ui-monospace,monospace;font-size:12px;opacity:.9;min-width:47px;text-align:center}
+.lyricbox{margin-top:14px;min-height:210px;display:grid;align-content:center;gap:10px;text-align:center;border-radius:20px;padding:20px 14px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12)}
+.en{direction:ltr;font-size:clamp(19px,5vw,28px);line-height:1.6;text-shadow:0 0 8px #fff,0 0 18px #72d1ff}
+.fa{font-family:AmiriLocal,Tahoma,sans-serif;font-size:clamp(21px,5.4vw,31px);line-height:1.8;text-shadow:0 0 8px #fff,0 0 18px #72d1ff}
+.recorded{font:700 15px ui-monospace,monospace;color:#bcecff;min-height:20px}
+.mainbtn{width:100%;min-height:74px;margin-top:14px;border:0;border-radius:22px;background:linear-gradient(145deg,#9ce8ff,#188fd8);color:#031226;font-weight:900;font-size:18px;box-shadow:0 12px 30px rgba(20,158,225,.32);cursor:pointer}
+.mainbtn:active{transform:scale(.985)}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+button.small{min-height:46px;border:1px solid rgba(255,255,255,.18);border-radius:15px;background:rgba(255,255,255,.09);color:#fff;font-weight:700;cursor:pointer}
+.finetune{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.finetune button{min-height:42px;border:1px solid rgba(255,255,255,.15);border-radius:14px;background:rgba(60,170,230,.12);color:#dff7ff}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}
+.actions button,.actions a{min-height:46px;border-radius:15px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.09);color:#fff;display:grid;place-items:center;text-decoration:none;font-weight:700}
+.warn{margin-top:12px;font-size:12px;line-height:1.9;opacity:.78}
+.complete{color:#adffce}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(30px);opacity:0;transition:.25s;background:#fff;color:#08233b;padding:10px 15px;border-radius:999px;z-index:10;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:520px){.controls{grid-template-columns:1fr 1fr}.controls .wide{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>تنظیم دقیق زیرنویس</h1>
+    <div class="sub">آهنگ را پخش کن؛ دقیقاً با شروع هر جمله روی «ثبت شروع این جمله» بزن. زمان مستقیم از خود فایل MP3 گرفته می‌شود.</div>
+  </div>
+  <div class="panel">
+    <audio id="audio" src="assets/my-girl.mp3" preload="auto"></audio>
+    <div class="status"><span class="badge" id="counter">جمله 1</span><span class="badge" id="savedCount">ثبت‌شده: 0</span></div>
+    <div class="seekrow"><span class="time" id="cur">0:00.00</span><input id="seek" type="range" min="0" max="177.3" value="0" step="0.01"><span class="time" id="dur">2:57.29</span></div>
+    <div class="lyricbox">
+      <div class="en" id="en"></div>
+      <div class="fa" id="fa"></div>
+      <div class="recorded" id="recorded"></div>
+    </div>
+    <button class="mainbtn" id="stamp">ثبت شروع این جمله و رفتن به بعدی</button>
+    <div class="controls">
+      <button class="small" id="play">▶ پخش</button>
+      <button class="small" id="prev">جمله قبلی</button>
+      <button class="small" id="next">جمله بعدی</button>
+      <button class="small" id="back2">↶ ۲ ثانیه</button>
+      <button class="small" id="preview">پیش‌نمایش این جمله</button>
+      <button class="small wide" id="jump">رفتن به زمان ثبت‌شده</button>
+    </div>
+    <div class="finetune">
+      <button data-nudge="-0.10">−0.10</button>
+      <button data-nudge="-0.05">−0.05</button>
+      <button data-nudge="0.05">+0.05</button>
+      <button data-nudge="0.10">+0.10</button>
+    </div>
+    <div class="actions">
+      <button id="copy">کپی زمان‌ها</button>
+      <button id="download">دانلود JSON</button>
+      <button id="reset">پاک‌کردن تنظیمات</button>
+      <a href="index.html">برگشت به برنامه</a>
+    </div>
+    <div class="warn">ذخیره خودکار است. هر بار که یک زمان را ثبت یا اصلاح می‌کنی، همان لحظه در مرورگر ذخیره می‌شود و صفحه اصلی برنامه از همین زمان‌ها استفاده می‌کند. برای بیشترین دقت، یک بار کامل آهنگ را از ابتدا تا انتها کالیبره کن.</div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const STORAGE_KEY="birthday-my-girl-subtitle-sync-v1";
+const DEFAULT_LINES=[{"t": 8.8, "en": "You got a boyfriend again", "fa": "دوباره دوست‌پسر پیدا کردی"}, {"t": 12.2, "en": "Oh, baby, does he kiss you", "fa": "عزیزم، اون می‌بوسدت"}, {"t": 14.9, "en": "Better than the way that I did?", "fa": "بهتر از اون‌جوری که من می‌بوسیدمت؟"}, {"t": 19.3, "en": "Do you pretend we were just friends?", "fa": "وانمود می‌کنی ما فقط دوست معمولی بودیم؟"}, {"t": 24.0, "en": "Honey, we both know that", "fa": "عزیزم، هردومون می‌دونیم که"}, {"t": 26.8, "en": "I could treat you better than him", "fa": "من بهتر از اون باهات رفتار می‌کنم"}, {"t": 30.8, "en": "From the moment you kissed me", "fa": "از همون لحظه‌ای که منو بوسیدی"}, {"t": 33.6, "en": "In that dark room", "fa": "توی اون اتاق تاریک"}, {"t": 36.4, "en": "My heart belonged to you", "fa": "قلبم مال تو شد"}, {"t": 40.8, "en": "I wanna make you my girl, give you the world", "fa": "می‌خوام دخترِ من بشی، می‌خوام دنیا رو بهت بدم"}, {"t": 46.0, "en": "My love would look pretty on you", "fa": "عشق من بهت میاد"}, {"t": 50.0, "en": "I wanna make you my girl", "fa": "می‌خوام دخترِ من باشی"}, {"t": 53.0, "en": "Run your hands through my curls", "fa": "دستات رو لای موهای فرم بکشی"}, {"t": 57.0, "en": "And I’ll kiss your butterfly tattoos", "fa": "و من تتوهای پروانه‌ایت رو می‌بوسم"}, {"t": 57.78, "en": "Pretty green eyes, oh, my", "fa": "اون چشم‌های سبز قشنگت، خدای من"}, {"t": 61.18, "en": "Oh, darling, you don’t know", "fa": "عزیزم، نمی‌دونی"}, {"t": 63.88, "en": "The power that you have over me", "fa": "چه قدرتی روم داری"}, {"t": 68.28, "en": "Little white lies, can’t hide", "fa": "اون دروغ‌های کوچیک دیگه پنهون نمی‌مونن"}, {"t": 72.98, "en": "Yeah, you’re an angel that", "fa": "آره، تو مثل فرشته‌ای هستی که"}, {"t": 75.78, "en": "I’m looking at from down on my knees", "fa": "دارم از روی زانو نگات می‌کنم"}, {"t": 79.78, "en": "From the moment you kissed me", "fa": "از همون لحظه‌ای که منو بوسیدی"}, {"t": 82.58, "en": "In that dark room", "fa": "توی اون اتاق تاریک"}, {"t": 85.38, "en": "My heart belonged to you", "fa": "قلبم برای تو شد"}, {"t": 89.78, "en": "I wanna make you my girl, give you the world", "fa": "می‌خوام دخترِ من باشی و دنیا رو به پات بریزم"}, {"t": 94.98, "en": "My love would look pretty on you", "fa": "عشق من قشنگ روی تو می‌شینه"}, {"t": 98.98, "en": "I wanna make you my girl", "fa": "می‌خوام دخترِ من باشی"}, {"t": 101.98, "en": "Run your hands through my curls", "fa": "دستات رو توی موهای فرم بکشی"}, {"t": 105.98, "en": "And I’ll kiss your butterfly tattoos", "fa": "و من تتوهای پروانه‌ایت رو می‌بوسم"}, {"t": 108.65, "en": "It’s been two years since I saw you last", "fa": "دو ساله ندیدمت"}, {"t": 113.55, "en": "And I hate that you’re not mine", "fa": "و از این متنفرم که مال من نیستی"}, {"t": 118.45, "en": "Strong perfume and a pretty laugh", "fa": "اون عطر تند و خنده‌ی قشنگت"}, {"t": 123.05, "en": "Oh, it keeps me up at night", "fa": "شب‌ها نمی‌ذاره بخوابم"}, {"t": 128.05, "en": "I wanna make you my girl, give you the world", "fa": "می‌خوام مال من باشی و دنیا رو بهت بدم"}, {"t": 133.35, "en": "Call me and I’ll run back to you", "fa": "فقط صدام کن، برمی‌گردم سمتت"}, {"t": 137.25, "en": "I wanna make you my girl", "fa": "می‌خوام دخترِ من باشی"}, {"t": 140.2, "en": "Does he say, ‘You’re a pearl?’", "fa": "اونم بهت میگه مثل مرواریدی؟"}, {"t": 143.0, "en": "Babydoll, I could fill his shoes", "fa": "عروسکم، من می‌تونم جای اونو بگیرم، حتی بهترش باشم"}, {"t": 147.63, "en": "I wanna make you my girl, give you the world", "fa": "می‌خوام مال من باشی و دنیا رو بهت بدم"}, {"t": 152.83, "en": "My love would look pretty on you", "fa": "عشق من بهت میاد"}, {"t": 156.83, "en": "I wanna make you my girl", "fa": "می‌خوام دخترِ من باشی"}, {"t": 159.83, "en": "Run your hands through my curls", "fa": "دستات رو لای موهای فرم بکشی"}, {"t": 163.83, "en": "And I’ll kiss your butterfly tattoos", "fa": "و من تتوهای پروانه‌ایت رو می‌بوسم"}, {"t": 167.25, "en": "", "fa": ""}];
+const audio=document.getElementById("audio"), seek=document.getElementById("seek");
+let index=0;
+let times=DEFAULT_LINES.map(x=>x.t);
+try{
+  const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+  if(Array.isArray(s)&&s.length===times.length) times=s.map((v,i)=>Number.isFinite(Number(v))?Number(v):times[i]);
+}catch(e){}
+let touched=new Set();
+try{const t=JSON.parse(localStorage.getItem(STORAGE_KEY+"-touched")||"[]");if(Array.isArray(t)) touched=new Set(t)}catch(e){}
+function fmt(s){s=Math.max(0,Number(s)||0);const m=Math.floor(s/60),sec=s-m*60;return m+":"+sec.toFixed(2).padStart(5,"0")}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1500)}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(times.map(x=>+x.toFixed(3))));localStorage.setItem(STORAGE_KEY+"-touched",JSON.stringify([...touched]));render()}
+function render(){
+  const line=DEFAULT_LINES[index];
+  document.getElementById("counter").textContent=`جمله ${index+1} از ${DEFAULT_LINES.length}`;
+  document.getElementById("savedCount").textContent=`ثبت‌شده: ${touched.size} / ${DEFAULT_LINES.length}`;
+  document.getElementById("en").textContent=line.en||"—";
+  document.getElementById("fa").textContent=line.fa||"—";
+  const r=document.getElementById("recorded");
+  r.textContent=`زمان: ${fmt(times[index])} ${touched.has(index)?"✓":"(پیش‌فرض)"}`;
+  r.className="recorded"+(touched.has(index)?" complete":"");
+}
+function setIndex(i){index=Math.max(0,Math.min(DEFAULT_LINES.length-1,i));render()}
+function stamp(){times[index]=audio.currentTime;touched.add(index);save();if(index<DEFAULT_LINES.length-1){index++;render()}else toast("همه جمله‌ها ثبت شدند")}
+document.getElementById("stamp").onclick=stamp;
+document.getElementById("play").onclick=async()=>{if(audio.paused){await audio.play();}else audio.pause()};
+audio.onplay=()=>document.getElementById("play").textContent="⏸ توقف";
+audio.onpause=()=>document.getElementById("play").textContent="▶ پخش";
+document.getElementById("prev").onclick=()=>setIndex(index-1);
+document.getElementById("next").onclick=()=>setIndex(index+1);
+document.getElementById("back2").onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime-2)};
+document.getElementById("jump").onclick=()=>{audio.currentTime=Math.max(0,times[index]-0.6)};
+document.getElementById("preview").onclick=async()=>{audio.currentTime=Math.max(0,times[index]-0.35);await audio.play();const stopAt=(index<times.length-1?times[index+1]:times[index]+5);const check=()=>{if(audio.currentTime>=stopAt+.3)audio.pause();else if(!audio.paused)requestAnimationFrame(check)};requestAnimationFrame(check)};
+document.querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>{times[index]=Math.max(0,times[index]+Number(b.dataset.nudge));touched.add(index);save();audio.currentTime=Math.max(0,times[index]-.4)});
+seek.oninput=()=>{audio.currentTime=Number(seek.value)};
+audio.ontimeupdate=()=>{seek.value=audio.currentTime;document.getElementById("cur").textContent=fmt(audio.currentTime)};
+audio.onloadedmetadata=()=>{seek.max=audio.duration;document.getElementById("dur").textContent=fmt(audio.duration)};
+document.getElementById("copy").onclick=async()=>{const payload=JSON.stringify(times.map(x=>+x.toFixed(3)));try{await navigator.clipboard.writeText(payload);toast("زمان‌ها کپی شد")}catch(e){prompt("این متن را کپی کن:",payload)}};
+document.getElementById("download").onclick=()=>{const data={song:"Isabel LaRosa - My Girl",duration:audio.duration||177.293,timings:times.map(x=>+x.toFixed(3)),lines:DEFAULT_LINES.map((x,i)=>({...x,t:+times[i].toFixed(3)}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="my-girl-subtitle-timings.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+document.getElementById("reset").onclick=()=>{if(!confirm("همه زمان‌های کالیبره‌شده پاک شوند؟"))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(STORAGE_KEY+"-touched");times=DEFAULT_LINES.map(x=>x.t);touched.clear();render();toast("تنظیمات پاک شد")};
+document.addEventListener("keydown",e=>{if(e.code==="Space"&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();stamp()}else if(e.key==="ArrowLeft")setIndex(index+1);else if(e.key==="ArrowRight")setIndex(index-1)});
+render();
+</script>
+</body></html>

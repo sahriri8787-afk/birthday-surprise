@@ -1,0 +1,1983 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#9ddcf8" />
+<title>برای تو 💙</title>
+<style>
+:root{
+  --sky:#9edcff;
+  --sky2:#dff5ff;
+  --sea:#3aa7d9;
+  --deep:#0d4f7a;
+  --ink:#17384d;
+  --paper:#fffdf8;
+  --blue:#4ea8de;
+  --blue2:#84cfff;
+  --glow:rgba(255,255,255,.88);
+  --shadow:0 22px 70px rgba(8,54,87,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#9edcff;font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+@font-face{font-family:"AmiriLocal";src:url("assets/Amiri-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+button,input{font:inherit}
+button{border:0;cursor:pointer}
+#app{width:100%;height:100%;position:relative;overflow:hidden}
+.screen{
+  position:absolute;inset:0;display:grid;place-items:center;
+  opacity:0;visibility:hidden;transform:scale(1.025);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.2,.8,.2,1),visibility .85s;
+}
+.screen.active{opacity:1;visibility:visible;transform:scale(1)}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.soft-btn{
+  padding:13px 24px;border-radius:999px;color:#fff;font-weight:700;
+  background:linear-gradient(145deg,#72d5ff,#1689d1);backdrop-filter:blur(14px);
+  box-shadow:0 12px 26px rgba(18,111,164,.25),inset 0 2px 3px rgba(255,255,255,.55),inset 0 -3px 7px rgba(0,72,125,.22);
+  border:1px solid rgba(255,255,255,.55);
+  transition:.2s transform,.2s filter,.2s box-shadow;
+}
+.soft-btn:hover{filter:brightness(1.06);box-shadow:0 15px 32px rgba(18,111,164,.3),inset 0 2px 3px rgba(255,255,255,.65),inset 0 -3px 7px rgba(0,72,125,.2)}
+.soft-btn:active{transform:scale(.94) translateY(2px);filter:brightness(.98)}
+.round-play{width:116px;height:116px;padding:0;border-radius:50%;background:url("assets/play-button-blue.png") center/cover no-repeat;box-shadow:0 15px 34px rgba(10,100,170,.3),0 0 0 5px rgba(255,255,255,.18);font-size:0;position:relative;overflow:hidden;display:inline-block}
+.round-play:after{content:"";position:absolute;inset:8%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 45%,rgba(0,93,170,.08));pointer-events:none}
+.round-play:active{transform:scale(.91) translateY(3px)}
+.round-label{display:block;margin-top:9px;font-weight:700;color:#fff;text-shadow:0 2px 10px rgba(10,75,105,.35)}
+.nav-next{position:absolute;bottom:max(26px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:12}
+
+.music-next-btn{
+  left:16px;
+  right:auto;
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  transform:none;
+  z-index:18;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:52px;
+  padding:12px 18px 12px 14px;
+  border-radius:24px 24px 24px 10px;
+  background:
+    linear-gradient(145deg,rgba(132,220,255,.97),rgba(30,144,224,.96) 58%,rgba(120,109,255,.95));
+  color:#fff;
+  box-shadow:
+    0 16px 34px rgba(10,88,145,.34),
+    0 0 24px rgba(130,210,255,.22),
+    inset 0 2px 4px rgba(255,255,255,.55),
+    inset 0 -4px 8px rgba(8,63,120,.20);
+  border:1px solid rgba(255,255,255,.62);
+  backdrop-filter:blur(12px);
+  font-size:15px;
+  letter-spacing:.1px;
+}
+.music-next-btn::before{
+  content:"✦";
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
+  font-size:15px;
+  flex:0 0 auto;
+}
+.music-next-btn:hover{
+  filter:brightness(1.07);
+  box-shadow:
+    0 20px 38px rgba(10,88,145,.40),
+    0 0 28px rgba(130,210,255,.28),
+    inset 0 2px 4px rgba(255,255,255,.62),
+    inset 0 -4px 8px rgba(8,63,120,.20);
+}
+.music-next-btn:active{transform:translateY(2px) scale(.97)}
+@media (max-width:420px){
+  .music-next-btn{
+    left:12px;
+    bottom:max(12px,calc(env(safe-area-inset-bottom) + 8px));
+    min-height:48px;
+    padding:11px 16px 11px 13px;
+    border-radius:22px 22px 22px 10px;
+    font-size:14px;
+  }
+  .music-next-btn::before{width:24px;height:24px;font-size:14px}
+}
+
+/* 1. Ocean / exact splash artwork */
+#ocean{
+  background:#075fa5 url("assets/ocean-splash.png") center center / cover no-repeat;
+  isolation:isolate;
+}
+.ocean-splash{
+  position:absolute;inset:0;z-index:10;pointer-events:none;
+  display:block;
+}
+.ocean-enter-hit{
+  position:absolute;
+  left:50%;top:53.2%;
+  width:116px;height:116px;
+  transform:translate(-50%,-50%);
+  border:0;border-radius:50%;
+  background:transparent;
+  box-shadow:none;
+  padding:0;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.ocean-enter-hit:focus-visible{
+  outline:3px solid rgba(255,255,255,.85);
+  outline-offset:7px;
+}
+@media (max-width:600px){
+  .ocean-enter-hit{width:108px;height:108px;top:53.2%}
+}
+/* 2. Gift */
+#gift{background:#061c48 url("assets/gift-background-final.jpg") center/cover no-repeat;isolation:isolate}
+#gift:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(77,194,255,.20),transparent 34%),linear-gradient(180deg,rgba(2,12,40,.10),rgba(1,8,30,.30));z-index:0;pointer-events:none}
+.gift-stage{text-align:center;perspective:1000px;position:relative;z-index:3;width:min(92vw,520px);padding:24px 18px}
+.gift-art{width:min(68vw,285px);max-height:285px;object-fit:contain;margin:4px auto 18px;display:block;filter:drop-shadow(0 18px 24px rgba(0,22,70,.40)) drop-shadow(0 0 28px rgba(71,202,255,.28));animation:giftFloat 3s ease-in-out infinite;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:filter .2s,transform .2s}
+.gift-art:hover{filter:drop-shadow(0 20px 28px rgba(0,22,70,.46)) drop-shadow(0 0 38px rgba(71,202,255,.48))}
+.gift-art:active{transform:scale(.94) translateY(3px)}
+@keyframes giftFloat{50%{transform:translateY(-8px) rotate(1deg)}}
+.gift-title{font-family:"AmiriLocal","Amiri","Noto Naskh Arabic",serif;color:#fff;text-shadow:0 3px 16px rgba(0,24,62,.65);font-size:clamp(34px,8.5vw,46px);font-weight:400;line-height:1.45;margin-bottom:24px}
+.gift-hint{font-family:"AmiriLocal","Amiri","Noto Naskh Arabic",serif;color:rgba(255,255,255,.92);font-size:16px;text-shadow:0 2px 12px rgba(0,20,55,.75);margin-top:16px}
+.gift-english{font-family:Georgia,"Times New Roman",serif;color:rgba(255,255,255,.96);font-size:clamp(18px,4.5vw,25px);font-weight:600;letter-spacing:.20em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,20,55,.62);margin-top:-15px;direction:ltr}
+.gift-divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px auto 22px;width:min(62vw,260px);direction:ltr}
+.gift-divider span{height:1.5px;flex:1;background:rgba(255,255,255,.82);box-shadow:0 0 8px rgba(255,255,255,.28)}
+.gift-divider b{font-family:Georgia,serif;color:#dff7ff;font-size:22px;line-height:1;text-shadow:0 0 12px rgba(113,219,255,.75);font-weight:400}
+.gift-bubbles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.gift-bubbles:before,.gift-bubbles:after{content:"";position:absolute;width:22px;height:22px;border:2px solid rgba(255,255,255,.55);border-radius:50%;left:18%;bottom:18%;animation:bubble 4s linear infinite}
+.gift-bubbles:after{width:12px;height:12px;left:76%;bottom:12%;animation-delay:-1.7s}
+@keyframes bubble{to{transform:translateY(-240px) scale(1.4);opacity:0}}
+
+/* 3. Journal — full-screen, touch/swipe page turn */
+#journal{background:#c8e9f8;overflow:hidden;touch-action:pan-y}
+.journal-wrap{position:absolute;inset:0;width:100vw;height:100dvh;perspective:1800px;overflow:hidden}
+.book{position:absolute;inset:0;width:100%;height:100%;transform-style:preserve-3d}
+.page{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(145deg,#eefaff,#bfe4f5);transform-origin:left center;transition:transform .78s cubic-bezier(.2,.75,.18,1),opacity .55s;backface-visibility:hidden;box-shadow:0 0 35px rgba(15,91,125,.16)}
+.page:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(61,92,120,.06),transparent 9%,transparent 91%,rgba(61,92,120,.04));pointer-events:none;z-index:3}
+.page.flipped{transform:rotateY(-180deg);opacity:0;pointer-events:none}
+.journal-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1}
+.journal-overlay{position:absolute;inset:0;z-index:4;pointer-events:none}
+.page h2{font-family:Georgia,serif;font-size:clamp(28px,7vw,48px);margin:0 0 18px;color:#28698c}
+.sticker{position:absolute;font-size:34px;transform:rotate(-8deg)}
+.note{line-height:2.1;font-size:15px;max-width:78%}
+.book-controls{
+  position:fixed;
+  top:max(14px,env(safe-area-inset-top));
+  left:0;right:0;
+  display:flex;
+  justify-content:space-between;
+  padding:0 18px;
+  z-index:30;
+  pointer-events:none;
+}
+.book-controls .soft-btn{
+  pointer-events:auto;
+  min-width:72px;
+  min-height:40px;
+  padding:8px 14px;
+  font-size:13px;
+  font-weight:700;
+  color:#7a5561;
+  background:linear-gradient(145deg,rgba(255,250,248,.95),rgba(244,228,233,.92));
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:22px;
+  box-shadow:
+    0 10px 24px rgba(120,92,98,.14),
+    inset 0 2px 3px rgba(255,255,255,.9),
+    inset 0 -3px 6px rgba(201,172,180,.18);
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+}
+.book-controls .soft-btn:hover{
+  filter:brightness(1.04);
+}
+.book-controls .soft-btn:active{
+  transform:scale(.96) translateY(1px);
+}
+.book-controls .soft-btn:disabled{
+  opacity:.42;
+  filter:grayscale(.15);
+}
+#prevPage{
+  border-radius:18px 24px 24px 24px;
+}
+#nextPage{
+  border-radius:24px 18px 24px 24px;
+}
+@media (max-width:420px){
+  .book-controls{
+    padding:0 14px;
+  }
+  .book-controls .soft-btn{
+    min-width:66px;
+    min-height:38px;
+    padding:7px 12px;
+    font-size:12px;
+  }
+}
+.journal-swipe-hint{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:20;color:rgba(255,255,255,.92);font-size:13px;text-shadow:0 2px 8px rgba(0,55,90,.45);pointer-events:none;animation:hintFade 3.5s ease forwards}
+@keyframes hintFade{0%,70%{opacity:1}100%{opacity:0}}
+
+/* 4. Music — RytmZendegy x Spotify lyrics player */
+#music{
+  background:#020718 url("assets/music-stars-bg.jpg") center/cover no-repeat;
+  color:white;isolation:isolate;overflow:hidden;
+}
+#music:before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 27%,rgba(132,218,255,.22),transparent 29%),linear-gradient(180deg,rgba(0,5,26,.24),rgba(0,5,22,.72));
+  z-index:0;pointer-events:none;
+}
+.music-sparkles,.music-sparkles i{position:absolute;inset:0;pointer-events:none}
+.music-sparkles{z-index:1;overflow:hidden}
+.music-sparkles i{inset:auto;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff 0 28%,rgba(197,235,255,.95) 30% 60%,transparent 68%);box-shadow:0 0 10px rgba(255,255,255,.9),0 0 22px rgba(120,205,255,.75);animation:twinkle var(--d,3s) ease-in-out infinite;opacity:.85;transform:scale(var(--s,1))}
+.music-sparkles i:before,.music-sparkles i:after{content:"";position:absolute;left:50%;top:50%;background:rgba(255,255,255,.86);transform:translate(-50%,-50%);border-radius:999px}
+.music-sparkles i:before{width:1.5px;height:20px;box-shadow:0 0 12px rgba(160,230,255,.65)}
+.music-sparkles i:after{width:20px;height:1.5px;box-shadow:0 0 12px rgba(160,230,255,.65)}
+@keyframes twinkle{0%,100%{opacity:.28;transform:scale(.7)}50%{opacity:1;transform:scale(1.16)}}
+.music-card{width:min(94vw,620px);height:calc(100dvh - 72px);text-align:center;position:relative;z-index:3;padding:max(10px,env(safe-area-inset-top)) 10px 82px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.music-top{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;flex:0 0 auto}
+.cd{width:clamp(105px,28vw,158px);height:clamp(105px,28vw,158px);border-radius:50%;margin:0;position:relative;overflow:hidden;background:#071524 url("assets/cd-jellyfish.jpg") center/135% no-repeat;box-shadow:0 0 0 5px rgba(255,255,255,.10),0 0 45px rgba(116,210,255,.38),inset 0 0 32px rgba(0,0,0,.42);isolation:isolate;flex:0 0 auto}
+.cd:before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 28% 20%,rgba(255,255,255,.65),transparent 12%),conic-gradient(from 20deg,transparent 0 72%,rgba(255,255,255,.3) 78%,transparent 84% 100%);mix-blend-mode:screen;opacity:.65;animation:shine 3.2s linear infinite}
+.cd:after{content:"";position:absolute;left:50%;top:50%;width:22%;height:22%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#05090f 0 28%,#a9d8ee 30% 34%,#132a3b 36% 100%);box-shadow:0 0 0 3px rgba(255,255,255,.22),0 0 22px rgba(145,224,255,.5);z-index:2}
+.cd.playing{animation:spin 5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shine{to{transform:rotate(360deg)}}
+.cd.paused{animation-play-state:paused}
+.music-heading{text-align:right;min-width:0}
+.music-title{margin:0 0 4px;font-size:clamp(23px,5.7vw,36px);text-shadow:0 0 14px rgba(205,239,255,.55),0 0 28px rgba(122,211,255,.35)}
+.music-subtitle{margin:0;color:rgba(230,245,255,.85);font-size:13px;direction:ltr;text-align:left;text-shadow:0 0 10px rgba(130,205,255,.45)}
+.lyrics-player{position:relative;width:100%;flex:1 1 auto;min-height:0;margin-top:4px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden}
+.lyrics-viewport{height:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding:42% 14px 46%;scroll-behavior:smooth;mask-image:linear-gradient(to bottom,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14%,#000 86%,transparent 100%)}
+.lyrics-viewport::-webkit-scrollbar{display:none}
+.lyric-row{width:min(89vw,560px);margin:0 auto 20px;padding:4px 8px;opacity:.26;transform:scale(.96);filter:saturate(.8);transition:opacity .06s linear,transform .10s ease,filter .06s linear;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lyric-row.near{opacity:.55;transform:scale(.985)}
+.lyric-row.active{opacity:1;transform:scale(1.035);filter:none}
+.lyric-en,.lyric-fa,.lyric-start{display:block}
+.lyric-en{direction:ltr;text-align:center;font-size:clamp(20px,5.5vw,30px);font-weight:750;line-height:1.5;color:rgba(241,249,255,.92);text-shadow:0 0 8px rgba(255,255,255,.22)}
+.lyric-fa{direction:rtl;text-align:center;margin-top:5px;font-size:clamp(17px,4.8vw,25px);font-weight:600;line-height:1.65;color:rgba(233,246,255,.88);text-shadow:0 0 9px rgba(113,205,255,.25)}
+.lyric-row.active .lyric-en,.lyric-row.active .lyric-fa{color:#fff;text-shadow:0 0 7px #fff,0 0 17px #8edcff,0 0 32px rgba(102,203,255,.85);animation:textShine 2.6s linear infinite}
+.lyric-row.active .lyric-fa{animation-direction:reverse}
+.lyric-start{font-size:clamp(17px,4.8vw,25px);line-height:1.8;color:#fff;text-shadow:0 0 8px #fff,0 0 18px #79d4ff}
+@keyframes textShine{0%{filter:brightness(.95)}50%{filter:brightness(1.22)}100%{filter:brightness(.95)}}
+.music-controls{width:min(90vw,560px);flex:0 0 auto;padding-top:4px}
+.music-progress{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;font-size:11px;color:rgba(238,248,255,.72);direction:ltr}
+.music-progress input{width:100%;accent-color:#fff;height:4px}
+.music-play-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:6px}
+.music-play-row .round-play{width:66px;height:66px}
+.music-play-row .round-label{margin:0;min-width:72px;text-align:right;font-size:13px}
+@media (max-height:720px){
+  .music-card{height:100dvh;padding-top:7px;padding-bottom:68px}
+  .cd{width:94px;height:94px}
+  .music-title{font-size:22px}.music-subtitle{font-size:11px}
+  .lyric-row{margin-bottom:14px}.lyric-en{font-size:16px}.lyric-fa{font-size:16px}
+  .music-play-row .round-play{width:56px;height:56px}
+}
+
+/* 5. Cards */
+#prediction{background:linear-gradient(155deg,#edfaff,#afdff6)}
+.pred-wrap{width:min(94vw,900px);text-align:center}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.pred-card{aspect-ratio:3/4;perspective:900px;min-width:0}
+.pred-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:.8s;cursor:pointer}
+.pred-card.open .pred-inner{transform:rotateY(180deg)}
+.front,.back{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;display:grid;place-items:center;box-shadow:0 12px 28px rgba(23,85,117,.16);overflow:hidden}
+.front{background:linear-gradient(145deg,#3a8ec0,#184d73);color:white;font-size:30px;border:1px solid rgba(255,255,255,.55)}
+.back{background:#fff;transform:rotateY(180deg);padding:10px;color:#245b7d}
+.back .card-img{width:100%;height:72%;border-radius:12px;background:linear-gradient(135deg,#e9f8ff,#b5ddf2);display:grid;place-items:center;font-size:38px}
+.back .typing{font-size:13px;min-height:42px;display:grid;place-items:center}
+.pred-bear{width:54%;max-height:42%;object-fit:contain;opacity:.95;filter:drop-shadow(0 8px 12px rgba(34,87,112,.15));animation:bearPeek 2.4s ease-in-out infinite}
+@keyframes bearPeek{50%{transform:translateY(-5px) rotate(2deg)}}
+
+/* 6. Timeline */
+#timeline{background:linear-gradient(#f1fbff,#ccecf8)}
+.timeline-shell{width:min(94vw,820px);height:78vh;overflow:auto;padding:24px 14px 110px;scrollbar-width:none}
+.timeline-shell::-webkit-scrollbar{display:none}
+.timeline-title{text-align:center;position:sticky;top:0;z-index:2;padding:12px;background:linear-gradient(rgba(241,251,255,.95),rgba(241,251,255,.55),transparent)}
+.memory{display:grid;grid-template-columns:1fr 80px 1fr;align-items:center;margin:20px 0}
+.memory:nth-child(even) .mem-card{grid-column:3}
+.memory:nth-child(odd) .mem-card{grid-column:1}
+.mem-card{background:#fff;border-radius:22px;padding:14px;box-shadow:0 12px 30px rgba(32,91,120,.12);transform:rotate(var(--r))}
+.mem-photo{height:170px;border-radius:15px;background:linear-gradient(135deg,#cfefff,#97cae3);display:grid;place-items:center;font-size:38px}
+.year{grid-column:2;grid-row:1;background:#4da4d3;color:#fff;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:auto;box-shadow:0 0 0 8px rgba(77,164,211,.12)}
+.time-line{position:absolute;top:130px;bottom:90px;left:50%;width:3px;background:linear-gradient(#5caed7,#a7d9ef);transform:translateX(-50%)}
+
+/* 7. Cake */
+#cake{background:radial-gradient(circle at 50% 30%,#f6fdff,#a8d8ef)}
+.cake-stage{text-align:center}
+.cake-wrap{position:relative;width:300px;height:280px;margin:auto}
+.cake-body{position:absolute;width:240px;height:110px;left:30px;bottom:32px;border-radius:26px 26px 38px 38px;background:linear-gradient(#fff,#dff4ff);box-shadow:0 20px 42px rgba(28,82,113,.18)}
+.icing{position:absolute;width:240px;height:38px;left:30px;bottom:116px;border-radius:50%;background:#82cbed}
+.candle-row{position:absolute;left:62px;right:62px;bottom:146px;display:flex;justify-content:space-between}
+.candle{width:13px;height:52px;border-radius:4px;background:repeating-linear-gradient(45deg,#5aaed9 0 8px,#fff 8px 16px);position:relative}
+.flame{position:absolute;width:17px;height:27px;left:-2px;top:-29px;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 50% 65%,#fff 0 12%,#ffd45c 16% 44%,#ff8b38 45% 70%,transparent 72%);filter:drop-shadow(0 0 10px #ffce5c);animation:flicker .2s infinite alternate;transform-origin:50% 100%}
+@keyframes flicker{to{transform:rotate(4deg) scale(.94)}}
+.blown .flame{animation:out .45s forwards}
+@keyframes out{to{opacity:0;transform:translateY(-14px) scale(.2)}}
+.mic-status{font-size:13px;opacity:.7;min-height:22px}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}.confetti-piece{position:absolute;top:-18px;width:8px;height:16px;border-radius:2px;opacity:0}.confetti-piece.fly{animation:confettiFall 1.8s cubic-bezier(.15,.8,.3,1) forwards}@keyframes confettiFall{0%{opacity:1;transform:translate3d(0,-20px,0) rotate(0)}100%{opacity:0;transform:translate3d(var(--x),var(--y),0) rotate(var(--r))}}
+
+/* 8. Letter */
+#letter{background:linear-gradient(145deg,#cfefff,#80bfe3)}
+.envelope-stage{text-align:center;width:min(90vw,520px);position:relative;z-index:2}
+.letter-drop{position:absolute;width:110px;left:-40px;top:20px;opacity:.4;animation:dropFloat 5s ease-in-out infinite;pointer-events:none}
+.letter-drop.right{left:auto;right:-30px;top:45%;width:75px;animation-delay:-2s}
+.envelope{width:310px;height:200px;margin:20px auto 28px;position:relative;background:#e7f7ff;border-radius:0 0 18px 18px;box-shadow:var(--shadow);cursor:pointer}
+.envelope:before{content:"";position:absolute;inset:0;clip-path:polygon(0 0,50% 58%,100% 0);background:#8cc9e8;transform-origin:top;transition:.75s;z-index:3}
+.letter-paper{position:absolute;left:18px;right:18px;bottom:12px;height:164px;background:#fff;border-radius:12px;padding:18px;transition:.85s;overflow:auto;text-align:right;line-height:2;box-shadow:0 8px 20px rgba(30,80,100,.1)}
+.envelope.open:before{transform:rotateX(180deg);z-index:0}
+.envelope.open .letter-paper{transform:translateY(-118px);height:320px}
+.letter-hint{font-size:13px;opacity:.75}
+
+/* 9. Final */
+#final{background:radial-gradient(circle at 50% 28%,#eefcff,#9bd4ef)}
+.final-card{width:min(90vw,470px);background:rgba(255,255,255,.76);backdrop-filter:blur(18px);border-radius:28px;padding:28px;box-shadow:var(--shadow);text-align:center;position:relative;z-index:3}
+.final-gift-art{width:130px;height:110px;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(18,71,105,.18));animation:giftFloat 2.8s ease-in-out infinite}
+.final-water{position:absolute;inset:0;pointer-events:none;overflow:hidden}.final-water img{position:absolute;width:100px;opacity:.22}.final-water .a{left:6%;top:14%}.final-water .b{right:4%;bottom:15%;width:70px}
+.lock-gift{font-size:68px;display:inline-block;animation:floaty 2s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-9px) rotate(2deg)}}
+.passbox{display:flex;gap:8px;margin:22px 0 8px}
+.passbox input{flex:1;min-width:0;border:1px solid #aad8ed;background:#fff;border-radius:14px;padding:13px 14px;outline:none;color:#24516a}
+.hidden{display:none!important}
+.code-card{margin-top:18px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 14px 30px rgba(28,81,110,.12);animation:pop .55s ease}
+.code-value{font:700 24px ui-monospace,monospace;letter-spacing:2px;color:#175f87;margin:8px 0 14px}
+@keyframes pop{from{opacity:0;transform:scale(.82)}}
+.guide{margin-top:12px;padding:14px;background:#eaf8ff;border-radius:15px;line-height:1.9;font-size:13px;text-align:right}
+.error{color:#ad3654;font-size:13px;min-height:20px}
+
+@media (max-width:620px){
+  .cards{grid-template-columns:repeat(4,1fr) !important;max-height:none !important;overflow:visible !important;padding:0 !important}
+  .journal-wrap{width:100vw;height:100dvh}
+  .memory{grid-template-columns:1fr 64px 1fr}
+  .year{width:52px;height:52px;font-size:12px}
+}
+
+/* JOURNAL-FANCY-SMALL-BUTTONS-V1 */
+.book-controls{
+  top:max(12px,env(safe-area-inset-top)) !important;
+  padding:0 14px !important;
+  align-items:center;
+}
+
+.book-controls .soft-btn{
+  pointer-events:auto;
+
+  min-width:64px !important;
+  min-height:37px !important;
+  padding:7px 13px !important;
+
+  font-size:12.5px !important;
+  font-weight:700 !important;
+
+  color:#785b62 !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,253,248,.96),
+      rgba(246,231,226,.94)
+    ) !important;
+
+  border:1px solid rgba(255,255,255,.9) !important;
+  border-radius:18px !important;
+
+  backdrop-filter:blur(9px) !important;
+  -webkit-backdrop-filter:blur(9px) !important;
+
+  box-shadow:
+    0 7px 18px rgba(106,80,70,.13),
+    inset 0 1.5px 2px rgba(255,255,255,.95),
+    inset 0 -2px 5px rgba(198,166,157,.13) !important;
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.85) !important;
+
+  transition:
+    transform .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease !important;
+}
+
+/* دکمه قبلی */
+#prevPage{
+  border-radius:20px 14px 20px 20px !important;
+}
+
+/* دکمه ورق بزن */
+#nextPage{
+  border-radius:14px 20px 20px 20px !important;
+}
+
+/* لمس */
+.book-controls .soft-btn:active{
+  transform:scale(.94) translateY(1px) !important;
+  filter:brightness(.98);
+}
+
+/* دکمه غیرفعال */
+.book-controls .soft-btn:disabled{
+  opacity:.38 !important;
+  filter:saturate(.55) !important;
+}
+
+/* در موبایل‌های کوچک‌تر */
+@media (max-width:420px){
+  .book-controls{
+    padding:0 12px !important;
+  }
+
+  .book-controls .soft-btn{
+    min-width:59px !important;
+    min-height:35px !important;
+    padding:6px 11px !important;
+    font-size:12px !important;
+  }
+}
+
+
+/* GO-MUSIC-BUTTON-PRO-V1 */
+.go-music-btn{
+  position:relative;
+  overflow:hidden;
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  min-width:210px !important;
+  min-height:58px !important;
+  padding:14px 28px !important;
+
+  border:none !important;
+  border-radius:999px !important;
+
+  color:#fff !important;
+  font-size:17px !important;
+  font-weight:800 !important;
+  letter-spacing:.2px !important;
+
+  background:
+    linear-gradient(135deg,
+      rgba(255,118,178,.96) 0%,
+      rgba(181,124,255,.95) 48%,
+      rgba(92,198,255,.95) 100%) !important;
+
+  box-shadow:
+    0 14px 34px rgba(134,92,255,.28),
+    0 8px 18px rgba(255,117,172,.18),
+    inset 0 2px 3px rgba(255,255,255,.45),
+    inset 0 -3px 8px rgba(72,47,140,.18) !important;
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.18),
+    0 0 14px rgba(255,255,255,.22) !important;
+
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease !important;
+}
+
+.go-music-btn::before{
+  content:"♫";
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.25),
+    0 4px 10px rgba(255,255,255,.08);
+  font-size:16px;
+  font-weight:900;
+  flex:0 0 auto;
+}
+
+.go-music-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(120deg,
+      transparent 0%,
+      rgba(255,255,255,.10) 30%,
+      rgba(255,255,255,.34) 45%,
+      transparent 62%);
+  transform:translateX(-130%);
+  animation:goMusicShine 3.4s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes goMusicShine{
+  0%{transform:translateX(-130%)}
+  45%{transform:translateX(-130%)}
+  70%{transform:translateX(130%)}
+  100%{transform:translateX(130%)}
+}
+
+.go-music-btn:hover{
+  transform:translateY(-2px) scale(1.02);
+  filter:brightness(1.05);
+  box-shadow:
+    0 18px 40px rgba(134,92,255,.34),
+    0 10px 20px rgba(255,117,172,.22),
+    inset 0 2px 3px rgba(255,255,255,.5),
+    inset 0 -3px 8px rgba(72,47,140,.18) !important;
+}
+
+.go-music-btn:active{
+  transform:translateY(1px) scale(.98);
+}
+
+@media (max-width:420px){
+  .go-music-btn{
+    min-width:190px !important;
+    min-height:54px !important;
+    padding:12px 22px !important;
+    font-size:15.5px !important;
+  }
+
+  .go-music-btn::before{
+    width:26px;
+    height:26px;
+    font-size:15px;
+  }
+}
+
+
+/* GO-MUSIC-BUTTON-BOTTOM-SMALL-V2 */
+
+#journalNext.go-music-btn{
+  position:fixed !important;
+
+  left:50% !important;
+  right:auto !important;
+
+  bottom:max(22px,calc(env(safe-area-inset-bottom) + 14px)) !important;
+
+  transform:translateX(-50%) !important;
+
+  min-width:165px !important;
+  min-height:48px !important;
+
+  padding:10px 18px !important;
+
+  font-size:14px !important;
+
+  border-radius:999px !important;
+
+  z-index:40 !important;
+}
+
+#journalNext.go-music-btn::before{
+  width:24px !important;
+  height:24px !important;
+  font-size:14px !important;
+}
+
+/* حفظ انیمیشن براق قبلی */
+#journalNext.go-music-btn::after{
+  animation:goMusicShine 3.4s ease-in-out infinite !important;
+}
+
+/* هنگام لمس، وسط صفحه باقی بماند */
+#journalNext.go-music-btn:active{
+  transform:translateX(-50%) translateY(1px) scale(.97) !important;
+}
+
+@media (max-width:420px){
+  #journalNext.go-music-btn{
+    min-width:152px !important;
+    min-height:44px !important;
+    padding:9px 15px !important;
+    font-size:13px !important;
+
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px)) !important;
+  }
+
+  #journalNext.go-music-btn::before{
+    width:22px !important;
+    height:22px !important;
+    font-size:13px !important;
+  }
+}
+
+
+/* PREDICTION-CARDS-PHOTO-V1 */
+#prediction{
+  background:linear-gradient(155deg,#fff8f4,#f5efe8) !important;
+  overflow:hidden;
+}
+
+.pred-wrap{
+  width:min(96vw,430px);
+  min-height:calc(100dvh - 90px);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:12px 4px 90px;
+  margin:0 auto;
+}
+
+.pred-wrap h2{
+  font-size:22px;
+  margin-bottom:6px;
+}
+
+.pred-wrap p{
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.cards{
+  width:100%;
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:8px !important;
+  margin-top:10px !important;
+  padding:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+.pred-card{
+  aspect-ratio:3/4 !important;
+  perspective:900px;
+  min-width:0;
+}
+
+.pred-inner{
+  position:relative;
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transition:.8s;
+  cursor:pointer;
+}
+
+.pred-card.open .pred-inner{
+  transform:rotateY(180deg);
+}
+
+.front,.back{
+  position:absolute;
+  inset:0;
+  border-radius:14px !important;
+  backface-visibility:hidden;
+  overflow:hidden;
+  box-shadow:0 10px 22px rgba(91,74,61,.14);
+}
+
+.front{
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#f9d7e6,#d9c4ff,#c3e6ff) !important;
+  color:#fff;
+  font-size:18px !important;
+  border:1px solid rgba(255,255,255,.72);
+}
+
+.back{
+  background:#fff;
+  transform:rotateY(180deg);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:6px !important;
+  color:#6b4f57;
+}
+
+.back .card-img{
+  width:100%;
+  height:74% !important;
+  border-radius:10px;
+  overflow:hidden;
+  background:#f7f1ec !important;
+  display:block !important;
+  position:relative;
+}
+
+.pred-photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.back .typing{
+  font-size:10px !important;
+  line-height:1.55;
+  min-height:34px !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:4px 2px 0;
+  color:#745861;
+}
+
+.pred-bear{
+  display:none !important;
+}
+
+@media (max-width:420px){
+  .pred-wrap{
+    width:min(97vw,420px);
+    padding:10px 2px 86px;
+  }
+
+  .cards{
+    gap:7px !important;
+  }
+
+  .pred-card{
+    aspect-ratio:0.72 !important;
+  }
+
+  .front{
+    font-size:16px !important;
+  }
+
+  .back .typing{
+    font-size:9.5px !important;
+    min-height:32px !important;
+  }
+}
+
+
+/* PREDICTION-CARD-COVERS-V2 */
+
+.pred-card .front{
+  padding:0 !important;
+  background:#f7efe9 !important;
+  overflow:hidden !important;
+  border:1px solid rgba(255,255,255,.8) !important;
+}
+
+.pred-cover{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+/* داخل کارت بعد از برگرداندن */
+.pred-card .back{
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.9),transparent 30%),
+    linear-gradient(145deg,#fffaf7,#f6e8ef) !important;
+
+  color:#765762 !important;
+  padding:8px !important;
+}
+
+.card-inside{
+  width:100%;
+  height:100%;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.72),rgba(250,232,239,.72));
+  border:1px dashed rgba(155,118,132,.22);
+}
+
+.card-inside span{
+  font-size:28px;
+  opacity:.45;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PREDICTION-FINAL-FIX START */
+
+#prediction{
+  background:
+    linear-gradient(rgba(1,10,32,.16),rgba(0,7,28,.34)),
+    url("assets/predictions/prediction-bg.jpg") center center / cover no-repeat !important;
+  overflow:hidden !important;
+}
+
+#prediction .pred-wrap{
+  width:min(94vw,430px) !important;
+  height:100dvh !important;
+  margin:0 auto !important;
+  padding:
+    max(20px,env(safe-area-inset-top))
+    8px
+    max(76px,calc(env(safe-area-inset-bottom) + 62px)) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+
+#prediction .pred-wrap h2{
+  color:#fff !important;
+  margin:0 0 4px !important;
+  font-size:clamp(18px,5vw,24px) !important;
+  text-shadow:
+    0 2px 16px rgba(0,24,68,.82),
+    0 0 18px rgba(111,218,255,.42);
+}
+
+#prediction .pred-wrap > p{
+  color:rgba(239,249,255,.90) !important;
+  margin:0 0 10px !important;
+  font-size:12px !important;
+  text-shadow:0 2px 12px rgba(0,14,46,.72);
+}
+
+#prediction .cards{
+  width:min(84vw,330px) !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:8px !important;
+  margin:0 auto !important;
+  padding:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+#prediction .pred-card{
+  aspect-ratio:3/4 !important;
+  min-width:0 !important;
+  perspective:1000px !important;
+}
+
+#prediction .pred-inner{
+  position:relative !important;
+  width:100% !important;
+  height:100% !important;
+  transform-style:preserve-3d !important;
+  transition:transform .72s cubic-bezier(.2,.75,.2,1) !important;
+}
+
+#prediction .pred-card.open .pred-inner{
+  transform:rotateY(180deg) !important;
+}
+
+#prediction .front,
+#prediction .back{
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:15px !important;
+  overflow:hidden !important;
+  backface-visibility:hidden !important;
+  -webkit-backface-visibility:hidden !important;
+  border:1px solid rgba(255,255,255,.58) !important;
+  box-shadow:
+    0 9px 20px rgba(0,17,53,.25),
+    inset 0 1px 2px rgba(255,255,255,.24) !important;
+}
+
+/* front/cover */
+#prediction .front{
+  transform:rotateY(0deg) !important;
+  background:
+    linear-gradient(rgba(0,40,100,.03),rgba(0,17,60,.14)),
+    url("assets/predictions/card-cover.jpg") center center / cover no-repeat !important;
+}
+
+/* back/inside */
+#prediction .back{
+  transform:rotateY(180deg) !important;
+  background:#07152f !important;
+  padding:0 !important;
+  display:block !important;
+}
+
+#prediction .inside-photo-wrap{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  border-radius:inherit !important;
+  overflow:hidden !important;
+}
+
+#prediction .inside-photo{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  display:block !important;
+}
+
+#prediction .inside-photo-wrap::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 58%,
+      rgba(0,8,30,.08) 74%,
+      rgba(0,8,30,.58) 100%
+    );
+}
+
+#prediction .inside-text{
+  position:absolute !important;
+  left:7px !important;
+  right:7px !important;
+  bottom:7px !important;
+  z-index:3 !important;
+
+  padding:8px 8px 9px !important;
+  border-radius:12px !important;
+
+  color:#fff !important;
+  text-align:center !important;
+  direction:rtl !important;
+
+  font-family:"AmiriLocal",Tahoma,serif !important;
+  font-size:10.3px !important;
+  font-weight:700 !important;
+  line-height:1.55 !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15,32,66,.38),
+      rgba(8,20,48,.28)
+    ) !important;
+
+  border:1px solid rgba(255,255,255,.30) !important;
+
+  backdrop-filter:blur(7px) !important;
+  -webkit-backdrop-filter:blur(7px) !important;
+
+  text-shadow:
+    0 0 7px rgba(255,255,255,.72),
+    0 2px 8px rgba(0,10,35,.88),
+    0 0 16px rgba(120,210,255,.34) !important;
+}
+
+#prediction .card-num{
+  position:absolute !important;
+  right:7px !important;
+  bottom:6px !important;
+  z-index:2 !important;
+
+  width:21px !important;
+  height:21px !important;
+
+  display:grid !important;
+  place-items:center !important;
+
+  border-radius:50% !important;
+
+  color:#fff !important;
+  font:700 10px/1 Arial,sans-serif !important;
+
+  background:rgba(4,32,83,.48) !important;
+  border:1px solid rgba(255,255,255,.38) !important;
+}
+
+/* next button */
+#predictionNext{
+  position:absolute !important;
+  left:50% !important;
+  bottom:max(15px,calc(env(safe-area-inset-bottom) + 9px)) !important;
+  transform:translateX(-50%) !important;
+
+  min-width:132px !important;
+  min-height:43px !important;
+  padding:9px 17px !important;
+
+  border-radius:999px !important;
+  color:#fff !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(77,204,255,.94),
+      rgba(75,108,239,.95)
+    ) !important;
+
+  border:1px solid rgba(255,255,255,.58) !important;
+
+  box-shadow:
+    0 10px 25px rgba(0,54,123,.32),
+    inset 0 2px 3px rgba(255,255,255,.38) !important;
+
+  z-index:20 !important;
+}
+
+#predictionNext:disabled{
+  opacity:.38 !important;
+}
+
+#prediction .pred-card.open .inside-photo{
+  animation:insidePhotoFinal .48s ease both;
+}
+
+#prediction .pred-card.open .inside-text{
+  animation:insideTextFinal .42s .08s ease both;
+}
+
+@keyframes insidePhotoFinal{
+  from{opacity:0;transform:scale(1.06)}
+  to{opacity:1;transform:scale(1)}
+}
+
+@keyframes insideTextFinal{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media (max-width:420px){
+  #prediction .cards{
+    width:min(82vw,318px) !important;
+    gap:7px !important;
+  }
+
+  #prediction .inside-text{
+    font-size:9.4px !important;
+    padding:7px 7px 8px !important;
+  }
+}
+
+/* PREDICTION-FINAL-FIX END */
+
+
+/* TRANSPARENT-PREDICTION-TEXT-V1 */
+
+#prediction .inside-text{
+  background:rgba(0,0,0,.04) !important;
+
+  border:1px solid rgba(255,255,255,.18) !important;
+
+  backdrop-filter:blur(1.5px) !important;
+  -webkit-backdrop-filter:blur(1.5px) !important;
+
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+
+  color:#fff !important;
+
+  text-shadow:
+    0 0 6px rgba(255,255,255,.85),
+    0 2px 5px rgba(0,0,0,.95),
+    0 0 12px rgba(120,210,255,.38) !important;
+}
+
+#prediction .inside-photo-wrap::after{
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 75%,
+      rgba(0,0,0,.12) 100%
+    ) !important;
+}
+
+
+/* RECHOOSE-CARD-BUTTON-V1 */
+
+#rechooseCardBtn{
+  position:absolute;
+  left:14px;
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px));
+  z-index:30;
+
+  width:46px;
+  height:46px;
+  padding:0;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.38);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15,42,90,.78),
+      rgba(24,90,155,.62)
+    );
+
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+
+  box-shadow:
+    0 9px 22px rgba(0,18,58,.28),
+    inset 0 1px 2px rgba(255,255,255,.26);
+
+  color:white;
+
+  transition:
+    transform .18s ease,
+    filter .18s ease,
+    box-shadow .18s ease;
+}
+
+#rechooseCardBtn svg{
+  width:23px;
+  height:23px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 0 5px rgba(126,220,255,.45));
+}
+
+#rechooseCardBtn:active{
+  transform:scale(.91) rotate(-12deg);
+}
+
+#rechooseCardBtn.reset-spin svg{
+  animation:rechooseSpin .42s ease;
+}
+
+@keyframes rechooseSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(-360deg)}
+}
+
+@media (max-width:420px){
+  #rechooseCardBtn{
+    width:42px;
+    height:42px;
+    left:12px;
+    bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px));
+  }
+
+  #rechooseCardBtn svg{
+    width:21px;
+    height:21px;
+  }
+}
+
+
+/* TIMELINE-POLAROID-V1 START */
+
+#timeline{
+  background:
+    radial-gradient(circle at 50% 15%,rgba(255,255,255,.72),transparent 30%),
+    linear-gradient(180deg,#eef8ff 0%,#dff1fb 42%,#cfe7f4 100%) !important;
+  overflow:hidden !important;
+}
+
+#timeline::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.35;
+  background-image:
+    radial-gradient(circle at 20% 14%,rgba(77,160,208,.20) 0 2px,transparent 3px),
+    radial-gradient(circle at 80% 24%,rgba(255,255,255,.72) 0 2px,transparent 3px),
+    radial-gradient(circle at 28% 70%,rgba(77,160,208,.16) 0 2px,transparent 3px);
+  background-size:72px 72px,90px 90px,110px 110px;
+}
+
+.timeline-shell{
+  position:relative !important;
+  z-index:2 !important;
+  width:min(96vw,520px) !important;
+  height:100dvh !important;
+  margin:0 auto !important;
+  padding:
+    max(22px,env(safe-area-inset-top))
+    12px
+    max(96px,calc(env(safe-area-inset-bottom) + 84px)) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  scrollbar-width:none;
+  scroll-behavior:smooth;
+}
+
+.timeline-shell::-webkit-scrollbar{display:none}
+
+.timeline-title{
+  margin:4px 0 6px !important;
+  text-align:center !important;
+  color:#294f68 !important;
+  font-family:"AmiriLocal",Tahoma,serif !important;
+  font-size:clamp(25px,7vw,34px) !important;
+  font-weight:700 !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.95),
+    0 4px 14px rgba(34,98,135,.18) !important;
+}
+
+.timeline-subtitle{
+  margin:0 0 18px;
+  text-align:center;
+  color:rgba(50,90,112,.68);
+  font-size:12px;
+}
+
+.polaroid-timeline{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:22px;
+  padding:6px 0 20px;
+}
+
+.polaroid-timeline::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  transform:translateX(-50%);
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(69,130,166,.26) 7%,
+      rgba(69,130,166,.26) 93%,
+      transparent
+    );
+  z-index:0;
+}
+
+.polaroid-item{
+  position:relative;
+  z-index:1;
+  width:min(72vw,270px);
+  padding:9px 9px 30px;
+  background:#fffdf8;
+  border-radius:4px;
+  box-shadow:
+    0 14px 30px rgba(47,89,111,.18),
+    0 2px 6px rgba(47,89,111,.10);
+  transform:rotate(var(--rot,0deg));
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+
+.polaroid-item:nth-child(odd){ --rot:-2.2deg; margin-left:-34px; }
+.polaroid-item:nth-child(even){ --rot:2.1deg; margin-right:-34px; }
+
+.polaroid-item:active{
+  transform:rotate(0deg) scale(.985);
+}
+
+.polaroid-photo{
+  width:100%;
+  aspect-ratio:4/5;
+  display:block;
+  object-fit:cover;
+  border-radius:2px;
+  background:#e9eef1;
+}
+
+.polaroid-item:nth-child(1) .polaroid-photo{object-position:center 34%}
+.polaroid-item:nth-child(2) .polaroid-photo{object-position:center 42%}
+.polaroid-item:nth-child(3) .polaroid-photo{object-position:center 40%}
+.polaroid-item:nth-child(4) .polaroid-photo{object-position:center 42%}
+.polaroid-item:nth-child(5) .polaroid-photo{object-position:center 46%}
+.polaroid-item:nth-child(6) .polaroid-photo{object-position:center 44%}
+.polaroid-item:nth-child(7) .polaroid-photo{object-position:center 40%}
+.polaroid-item:nth-child(8) .polaroid-photo{object-position:center 38%}
+.polaroid-item:nth-child(9) .polaroid-photo{object-position:center 38%}
+
+.polaroid-caption{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:7px;
+  text-align:center;
+  color:#58717f;
+  font-family:"AmiriLocal",Tahoma,serif;
+  font-size:13px;
+  line-height:1.2;
+}
+
+.polaroid-pin{
+  position:absolute;
+  top:-9px;
+  left:50%;
+  width:18px;
+  height:18px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%,#fff 0 12%,#8dcaf0 14% 36%,#4f9ccc 38% 100%);
+  box-shadow:0 3px 8px rgba(34,93,129,.25);
+}
+
+.timeline-next-btn{
+  position:absolute !important;
+  left:50% !important;
+  bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px)) !important;
+  transform:translateX(-50%) !important;
+  z-index:20 !important;
+  min-width:138px !important;
+  min-height:44px !important;
+  padding:10px 18px !important;
+  border-radius:999px !important;
+  background:
+    linear-gradient(135deg,#83d9ff,#4ca7e1) !important;
+  color:white !important;
+  border:1px solid rgba(255,255,255,.72) !important;
+  box-shadow:
+    0 10px 24px rgba(54,128,170,.28),
+    inset 0 2px 3px rgba(255,255,255,.45) !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+}
+
+@media (max-width:420px){
+  .timeline-shell{
+    width:100vw !important;
+    padding-left:9px !important;
+    padding-right:9px !important;
+  }
+
+  .polaroid-item{
+    width:min(70vw,252px);
+    padding:8px 8px 28px;
+  }
+
+  .polaroid-item:nth-child(odd){margin-left:-28px}
+  .polaroid-item:nth-child(even){margin-right:-28px}
+}
+
+/* TIMELINE-POLAROID-V1 END */
+
+</style>
+<!-- ULTRA-SYNC-JUST-FRIENDS-21.100 -->
+<!-- ENGLISH-ONLY-ULTRA-SYNC-INSTANT-ACTIVE -->
+<!-- LEFT-BOTTOM-PREDICTION-BUTTON -->
+<!-- PREDICTION-9-CARDS-BLUE-V3 -->
+<!-- PREDICTION-INSIDE-9-V1 -->
+<!-- PREDICTION-INSIDE-STYLE-V2 -->
+<!-- PREDICTION-INSIDE-STYLE-V3 -->
+<!-- PREDICTION-FINAL-FIX -->
+<!-- TIMELINE-POLAROID-V1 -->
+</head>
+<body>
+<div id="app">
+
+<section id="ocean" class="screen active" aria-label="برای تو">
+  <div class="ocean-splash" aria-hidden="true"></div>
+  <button class="ocean-enter-hit" id="enterBtn" aria-label="وارد شو"></button>
+</section>
+
+<section id="gift" class="screen">
+  <div class="gift-bubbles"></div>
+  <div class="gift-stage">
+    <h2 class="gift-title">هدیه رو باز کن</h2>
+    <div class="gift-english">OPEN THE GIFT</div>
+    <div class="gift-divider" aria-hidden="true"><span></span><b>♥</b><span></span></div>
+    <img class="gift-art" id="giftArt" src="assets/blue-gift.svg" alt="هدیه آبی؛ برای باز کردن لمس کن" role="button" tabindex="0" aria-label="باز کردن هدیه">
+    <p class="gift-hint">روی هدیه بزن 💙</p>
+  </div>
+</section>
+
+<section id="journal" class="screen">
+  <div class="journal-wrap" id="journalWrap">
+    <div class="book" id="book">
+      <article class="page journal-photo-page" style="z-index:4">
+        <img class="journal-template" src="assets/journal-page-1.png" alt="صفحه اول ژورنال">
+      </article>
+      <article class="page journal-photo-page" style="z-index:3">
+        <img class="journal-template" src="assets/journal-page-2.png" alt="صفحه دوم ژورنال">
+      </article>
+      <article class="page journal-photo-page" style="z-index:2">
+        <img class="journal-template" src="assets/journal-page-3.png" alt="صفحه سوم ژورنال">
+      </article>
+      <article class="page journal-photo-page" style="z-index:1">
+        <img class="journal-template" src="assets/journal-page-4.png" alt="صفحه چهارم ژورنال">
+      </article>
+    </div>
+    <div class="book-controls">
+      <button class="soft-btn" id="prevPage">قبلی</button>
+      <button class="soft-btn" id="nextPage">بعدی</button>
+    </div>
+    <div class="journal-swipe-hint">← با دست ورق بزن →</div>
+  </div>
+  <button class="soft-btn nav-next hidden go-music-btn" id="journalNext">بریم سراغ آهنگ</button>
+</section>
+
+<section id="music" class="screen">
+  <div class="music-sparkles" id="musicSparkles" aria-hidden="true"></div>
+  <div class="music-card">
+    <div class="music-top">
+      <div class="cd" id="cd"></div>
+      <div class="music-heading">
+        <h2 class="music-title">آهنگی برای تو</h2>
+        <p class="music-subtitle">Isabel LaRosa — My Girl</p>
+      </div>
+    </div>
+    <div class="lyrics-player">
+      <div class="lyrics-viewport" id="lyricsViewport" aria-live="polite"></div>
+    </div>
+    <div class="music-controls">
+      <div class="music-progress">
+        <span id="musicCurrent">0:00</span>
+        <input id="musicSeek" type="range" min="0" max="1000" value="0" aria-label="زمان آهنگ">
+        <span id="musicDuration">2:57</span>
+      </div>
+      <div class="music-play-row">
+        <button class="round-play music-round" id="musicPlay" aria-label="پخش آهنگ"></button>
+        <span class="round-label" id="musicPlayLabel">پخش آهنگ</span>
+      </div>
+    </div>
+    <audio id="musicAudio" src="assets/my-girl.mp3" preload="auto"></audio>
+  </div>
+  <button class="soft-btn nav-next music-next-btn" id="musicPredictionBtn" data-go="prediction">پیش‌بینی امسال</button>
+</section>
+
+<section id="prediction" class="screen">
+  <div class="pred-wrap">
+    <h2>امسال چی در انتظارته؟</h2>
+    <p style="opacity:.75">فقط یکی رو انتخاب کن 👀</p>
+    <div class="cards" id="cards"></div>
+  </div>
+  
+<button id="rechooseCardBtn" type="button" aria-label="انتخاب دوباره کارت" title="انتخاب دوباره">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20 7v5h-5"/>
+    <path d="M19 12a7 7 0 1 0-2.05 4.95"/>
+    <path d="M19 7l-3.2 3.2"/>
+  </svg>
+</button>
+
+  <button class="soft-btn" id="predictionNext" data-go="timeline" disabled>صفحه بعد ✦</button>
+</section>
+
+<section id="timeline" class="screen">
+  <div class="timeline-shell">
+    <h2 class="timeline-title">ماشین زمان رگیه خانوم</h2>
+    <p class="timeline-subtitle">از کوچولویی تا همین امروز ✦</p>
+
+    <div class="polaroid-timeline">
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-01.jpg" alt="خاطره 1">
+        <figcaption class="polaroid-caption">خاطره 1</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-02.jpg" alt="خاطره 2">
+        <figcaption class="polaroid-caption">خاطره 2</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-03.jpg" alt="خاطره 3">
+        <figcaption class="polaroid-caption">خاطره 3</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-04.jpg" alt="خاطره 4">
+        <figcaption class="polaroid-caption">خاطره 4</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-05.jpg" alt="خاطره 5">
+        <figcaption class="polaroid-caption">خاطره 5</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-06.jpg" alt="خاطره 6">
+        <figcaption class="polaroid-caption">خاطره 6</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-07.jpg" alt="خاطره 7">
+        <figcaption class="polaroid-caption">خاطره 7</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-08.jpg" alt="خاطره 8">
+        <figcaption class="polaroid-caption">خاطره 8</figcaption>
+      </figure>
+      <figure class="polaroid-item">
+        <span class="polaroid-pin"></span>
+        <img class="polaroid-photo" src="assets/timeline/timeline-09.jpg" alt="خاطره 9">
+        <figcaption class="polaroid-caption">خاطره 9</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <button class="soft-btn timeline-next-btn" data-go="cake">کیک تولد</button>
+</section>
+
+<section id="cake" class="screen">
+  <div class="confetti" id="confetti"></div>
+  <div class="cake-stage">
+    <h2>یه آرزو کن... 🎂</h2>
+    <div class="cake-wrap">
+      <div class="cake-body"></div><div class="icing"></div>
+      <div class="candle-row" id="candles">
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div>
+      </div>
+    </div>
+    <p class="mic-status" id="micStatus">می‌تونی فوت کنی یا روی کیک بزنی</p>
+    <button class="soft-btn" id="micBtn">فعال کردن فوت با میکروفون</button>
+  </div>
+  <button class="soft-btn nav-next hidden" id="cakeNext" data-go="letter">نامه‌ات آماده‌ست</button>
+</section>
+
+<section id="letter" class="screen">
+  <img class="letter-drop" src="assets/water-drop.svg" alt=""><img class="letter-drop right" src="assets/water-drop.svg" alt="">
+  <div class="envelope-stage">
+    <h2>یه نامه برای تو 💌</h2>
+    <div class="envelope" id="envelope">
+      <div class="letter-paper">
+        <strong>تولدت مبارک 💙</strong><br><br>
+        اینجا متن اصلی نامه قرار می‌گیرد. بعداً دقیقاً با متن خودت، فونت، دست‌خط، افکت تایپ و تزئینات آبی شخصی‌سازی‌اش می‌کنیم.
+        <br><br>
+        این فقط اسکلت اولیه‌ی صفحه است.
+      </div>
+    </div>
+    <p class="letter-hint">برای باز کردن نامه، پاکت رو لمس کن.</p>
+  </div>
+  <button class="soft-btn nav-next hidden" id="letterNext" data-go="final">آخرین سورپرایز</button>
+</section>
+
+<section id="final" class="screen">
+  <div class="final-water"><img class="a" src="assets/water-drop.svg" alt=""><img class="b" src="assets/water-drop.svg" alt=""></div>
+  <div class="final-card">
+    <img class="final-gift-art" src="assets/blue-gift.svg" alt="هدیه نهایی">
+    <h2>فکر کردی تموم شد؟</h2>
+    <p>برای باز کردن هدیه‌ی آخر، رمز رو وارد کن.</p>
+    <div class="passbox">
+      <input id="passwordInput" type="password" inputmode="numeric" placeholder="رمز عبور" />
+      <button class="soft-btn" id="unlockBtn">بازش کن</button>
+    </div>
+    <div class="error" id="passError"></div>
+    <div class="code-card hidden" id="codeCard">
+      <div>هدیه‌ی تو ✨</div>
+      <div class="code-value" id="internetCode">XXXX-XXXX-XXXX</div>
+      <button class="soft-btn" id="guideBtn">راهنمای استفاده</button>
+      <div class="guide hidden" id="guide">
+        اینجا راهنمای استفاده از کد اینترنت قرار می‌گیرد. متن نهایی را بعداً جایگزین می‌کنیم.
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ==========================
+   تنظیمات قابل تعویض پروژه
+   ========================== */
+const APP_CONFIG = {
+  password: "1403",                 // رمز موقت
+  internetCode: "XXXX-XXXX-XXXX",   // کد اینترنت موقت
+  lyrics: [
+    {t:8.5, en:"You got a boyfriend again", fa:""},
+    {t:9.835, en:"Oh, baby, does he kiss you", fa:""},
+    {t:14.38, en:"Better than the way that I did?", fa:""},
+    {t:21.1, en:"Do you pretend we were just friends?", fa:""},
+    {t:24.6, en:"Honey, we both know that", fa:""},
+    {t:27.12, en:"I could treat you better than him", fa:""},
+    {t:30.41, en:"From the moment you kissed me", fa:""},
+    {t:33.77, en:"In that dark room", fa:""},
+    {t:35.8, en:"My heart belonged to you", fa:""},
+    {t:39.38, en:"I wanna make you my girl, give you the world", fa:""},
+    {t:44.88, en:"My love would look pretty on you", fa:""},
+    {t:49.29, en:"I wanna make you my girl", fa:""},
+    {t:52.22, en:"Run your hands through my curls", fa:""},
+    {t:54.8, en:"And I’ll kiss your butterfly tattoos", fa:""},
+    {t:61, en:"Pretty green eyes, oh, my", fa:""},
+    {t:62.36, en:"Oh, darling, you don’t know", fa:""},
+    {t:65.68, en:"The power that you have over me", fa:""},
+    {t:68.79, en:"Little white lies, can’t hide", fa:""},
+    {t:72.24, en:"Yeah, you’re an angel that", fa:""},
+    {t:75.32, en:"I’m looking at from down on my knees", fa:""},
+    {t:79.43, en:"From the moment you kissed me", fa:""},
+    {t:83.15, en:"In that dark room", fa:""},
+    {t:85.32, en:"My heart belonged to you", fa:""},
+    {t:88.44, en:"I wanna make you my girl, give you the world", fa:""},
+    {t:94.04, en:"My love would look pretty on you", fa:""},
+    {t:98.09, en:"I wanna make you my girl", fa:""},
+    {t:101.24, en:"Run your hands through my curls", fa:""},
+    {t:104.66, en:"And I’ll kiss your butterfly tattoos", fa:""},
+    {t:109.11, en:"It’s been two years since I saw you last", fa:""},
+    {t:111.87, en:"And I hate that you’re not mine", fa:""},
+    {t:118.56, en:"Strong perfume and a pretty laugh", fa:""},
+    {t:123.55, en:"Oh, it keeps me up at night", fa:""},
+    {t:127.69, en:"I wanna make you my girl, give you the world", fa:""},
+    {t:132.228, en:"Call me and I’ll run back to you", fa:""},
+    {t:135.591, en:"I wanna make you my girl", fa:""},
+    {t:138.702, en:"Does he say, ‘You’re a pearl?’", fa:""},
+    {t:143.98, en:"Babydoll, I could fill his shoes", fa:""},
+    {t:148.814, en:"I wanna make you my girl, give you the world", fa:""},
+    {t:152.88, en:"My love would look pretty on you", fa:""},
+    {t:157.71, en:"I wanna make you my girl", fa:""},
+    {t:160.162, en:"Run your hands through my curls", fa:""},
+    {t:163.918, en:"And I’ll kiss your butterfly tattoos", fa:""},
+    {t:169.95, en:"", fa:""}
+  ],
+  predictions: [
+    {id:1, img:"assets/predictions/inside1.jpg", text:"دوست پسر جذاب بور و بچه خوشگل گیرت میاد"},
+    {id:2, img:"assets/predictions/inside2.jpg", text:"اکست بهت پیام میده بیا بک بزنیم😱"},
+    {id:3, img:"assets/predictions/inside3.jpg", text:"وسیله ای که آرزوشو داشتی رو میخری"},
+    {id:4, img:"assets/predictions/inside4.jpg", text:"دوست مجازیتو از نزدیک میبینی"},
+    {id:5, img:"assets/predictions/inside5.jpg", text:"اکسم اومد راش ندید😱"},
+    {id:6, img:"assets/predictions/inside6.jpg", text:"گوسفند میشی"},
+    {id:7, img:"assets/predictions/inside7.jpg", text:"تغییر جنسیت میدی"},
+    {id:8, img:"assets/predictions/inside8.jpg", text:"معدل امسالت بهترین میشه"},
+    {id:9, img:"assets/predictions/inside9.jpg", text:"به بزرگترین آرزوت میرسی"}
+  ]};
+
+/* زمان‌بندی زیرنویس نهایی و قفل‌شده داخل APP_CONFIG.lyrics قرار دارد. */
+
+/* ناوبری */
+const screens = [...document.querySelectorAll(".screen")];
+function go(id){
+  screens.forEach(s=>s.classList.toggle("active",s.id===id));
+}
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.go==="music") resetMusic(); go(b.dataset.go); }));
+
+/* صدای شروع بدون فایل خارجی */
+function chime(){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    [523.25,659.25,783.99].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.frequency.value=f;o.type="sine";
+      g.gain.setValueAtTime(0,ctx.currentTime+i*.12);
+      g.gain.linearRampToValueAtTime(.055,ctx.currentTime+i*.12+.03);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.8);
+      o.connect(g).connect(ctx.destination);
+      o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.85);
+    });
+  }catch(e){}
+}
+document.getElementById("enterBtn").onclick=()=>{chime();go("gift")};
+
+/* هدیه — فقط انیمیشن بالایی قابل کلیک است */
+let giftOpened=false;
+function openGift(){
+  if(giftOpened)return;
+  giftOpened=true;
+  const art=document.getElementById("giftArt");
+  art.style.animationPlayState="paused";
+  art.style.filter="drop-shadow(0 0 34px rgba(91,220,255,.85)) drop-shadow(0 18px 30px rgba(0,22,70,.5))";
+  setTimeout(()=>go("journal"),520);
+}
+const giftArt=document.getElementById("giftArt");
+giftArt.addEventListener("click",openGift);
+giftArt.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openGift()}});
+
+/* ژورنال */
+const pages=[...document.querySelectorAll(".page")];
+let pageIndex=0;
+function renderBook(){
+  pages.forEach((p,i)=>p.classList.toggle("flipped",i<pageIndex));
+  document.getElementById("prevPage").disabled=pageIndex===0;
+  if(pageIndex>=pages.length-1){
+    document.getElementById("nextPage").textContent="آخرین صفحه";
+    document.getElementById("journalNext").classList.remove("hidden");
+  }else{
+    document.getElementById("nextPage").textContent="ورق بزن";
+    document.getElementById("journalNext").classList.add("hidden");
+  }
+}
+document.getElementById("nextPage").onclick=()=>{if(pageIndex<pages.length-1){pageIndex++;renderBook()}};
+document.getElementById("prevPage").onclick=()=>{if(pageIndex>0){pageIndex--;renderBook()}};
+document.getElementById("journalNext").onclick=()=>go("music");
+let journalTouchX=0,journalTouchY=0;
+let journalSwipeLock=false;
+const journalWrap=document.getElementById("journalWrap");
+journalWrap.addEventListener("touchstart",e=>{const t=e.changedTouches[0];journalTouchX=t.clientX;journalTouchY=t.clientY;journalSwipeLock=false},{passive:true});
+journalWrap.addEventListener("touchend",e=>{if(journalSwipeLock)return;const t=e.changedTouches[0];const dx=t.clientX-journalTouchX;const dy=t.clientY-journalTouchY;if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.15){journalSwipeLock=true;if(dx<0 && pageIndex<pages.length-1){pageIndex++;renderBook()}else if(dx>0 && pageIndex>0){pageIndex--;renderBook()}setTimeout(()=>journalSwipeLock=false,850)}},{passive:true});
+renderBook();
+
+/* آهنگ اصلی + Lyrics Player سبک Spotify / ریتم زندگی */
+let musicRAF=null,musicPlaying=false,lastLyricIndex=-2;
+const cd=document.getElementById("cd");
+const play=document.getElementById("musicPlay");
+const musicAudio=document.getElementById("musicAudio");
+const musicPlayLabel=document.getElementById("musicPlayLabel");
+const lyricsViewport=document.getElementById("lyricsViewport");
+const musicSeek=document.getElementById("musicSeek");
+const musicCurrent=document.getElementById("musicCurrent");
+const musicDuration=document.getElementById("musicDuration");
+let lyricRows=[];
+
+function fmtTime(sec){
+  if(!Number.isFinite(sec)) return "0:00";
+  sec=Math.max(0,Math.floor(sec));
+  return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`;
+}
+function buildLyricsPlayer(){
+  lyricsViewport.innerHTML='';
+  const intro=document.createElement('div');
+  intro.className='lyric-row lyric-intro';
+  intro.dataset.index='-1';
+  intro.innerHTML='<span class="lyric-start">Tap play to start...</span>';
+  lyricsViewport.appendChild(intro);
+  APP_CONFIG.lyrics.forEach((item,i)=>{
+    if(!item.en) return;
+    const row=document.createElement('div');
+    row.className='lyric-row';
+    row.dataset.index=String(i);
+    row.innerHTML=item.en?`<span class="lyric-en">${item.en}</span>`:'';
+    row.addEventListener('click',()=>{
+      musicAudio.currentTime=Math.max(0,item.t+.02);
+      renderLyricsByTime(musicAudio.currentTime,true);
+    });
+    lyricsViewport.appendChild(row);
+  });
+  lyricRows=[...lyricsViewport.querySelectorAll('.lyric-row')];
+  setActiveLyric(-1,false);
+}
+function setActiveLyric(idx,smooth=true){
+  lyricRows.forEach(row=>{
+    const n=Number(row.dataset.index);
+    row.classList.toggle('active',n===idx);
+    row.classList.toggle('near',n!==idx && Math.abs(n-idx)<=1);
+  });
+  const target=lyricRows.find(row=>Number(row.dataset.index)===idx) || lyricRows[0];
+  if(target){
+    requestAnimationFrame(()=>target.scrollIntoView({behavior:smooth?'smooth':'auto',block:'center'}));
+  }
+}
+function findLyricIndex(t){
+  let lo=0,hi=APP_CONFIG.lyrics.length-1,idx=-1;
+  while(lo<=hi){
+    const mid=(lo+hi)>>1;
+    if(APP_CONFIG.lyrics[mid].t<=t){idx=mid;lo=mid+1}else{hi=mid-1}
+  }
+  while(idx>=0 && !APP_CONFIG.lyrics[idx].en) idx--;
+  return idx;
+}
+function renderLyricsByTime(t,force=false){
+  const idx=findLyricIndex(t);
+  if(force || idx!==lastLyricIndex){
+    lastLyricIndex=idx;
+    setActiveLyric(idx,true);
+  }
+}
+function updateMusicProgress(){
+  const duration=Number.isFinite(musicAudio.duration)?musicAudio.duration:177.293;
+  const current=musicAudio.currentTime||0;
+  musicSeek.value=duration>0?Math.round((current/duration)*1000):0;
+  musicCurrent.textContent=fmtTime(current);
+  musicDuration.textContent=fmtTime(duration);
+}
+function stopMusic(resetTime=false){
+  if(musicRAF) cancelAnimationFrame(musicRAF);
+  musicRAF=null;musicPlaying=false;musicAudio.pause();
+  if(resetTime) musicAudio.currentTime=0;
+  cd.classList.remove("playing");
+  play.setAttribute("aria-label","پخش آهنگ");
+  musicPlayLabel.textContent="پخش آهنگ";
+  if(resetTime){lastLyricIndex=-2;setActiveLyric(-1,false);updateMusicProgress();}
+}
+function musicLoop(){
+  renderLyricsByTime(musicAudio.currentTime||0);
+  updateMusicProgress();
+  if(!musicAudio.paused && !musicAudio.ended) musicRAF=requestAnimationFrame(musicLoop);
+}
+function resetMusic(){stopMusic(true)}
+play.onclick=async()=>{
+  if(musicPlaying){stopMusic(false);return}
+  try{await musicAudio.play()}catch(e){}
+};
+musicSeek.addEventListener('input',()=>{
+  const duration=Number.isFinite(musicAudio.duration)?musicAudio.duration:177.293;
+  musicAudio.currentTime=(Number(musicSeek.value)/1000)*duration;
+  renderLyricsByTime(musicAudio.currentTime,true);updateMusicProgress();
+});
+musicAudio.addEventListener('loadedmetadata',updateMusicProgress);
+musicAudio.addEventListener("ended",()=>stopMusic(true));
+musicAudio.addEventListener("pause",()=>{
+  if(!musicAudio.ended){musicPlaying=false;cd.classList.remove("playing");play.setAttribute("aria-label","پخش آهنگ");musicPlayLabel.textContent="پخش آهنگ";if(musicRAF)cancelAnimationFrame(musicRAF);musicRAF=null;updateMusicProgress();}
+});
+musicAudio.addEventListener("play",()=>{
+  musicPlaying=true;cd.classList.add("playing");play.setAttribute("aria-label","توقف آهنگ");musicPlayLabel.textContent="توقف آهنگ";if(musicRAF)cancelAnimationFrame(musicRAF);musicLoop();
+});
+buildLyricsPlayer();
+(function seedSparkles(){
+  const wrap=document.getElementById("musicSparkles");
+  if(!wrap) return;
+  const points=[
+    [8,18,1.0,2.4],[22,10,.8,3.1],[36,17,1.15,2.8],[48,7,1.05,3.6],[63,13,.9,2.9],[78,9,1.2,3.9],[90,20,.85,3.0],
+    [12,34,1.2,4.2],[29,29,.75,3.5],[41,36,.95,2.7],[57,30,1.25,3.3],[72,38,.82,2.5],[84,33,1.1,3.4],
+    [18,52,.92,3.8],[34,58,1.18,2.8],[50,48,.8,3.2],[66,56,1.0,4.1],[81,51,1.28,3.1],[92,60,.78,2.6],
+    [10,74,1.1,3.7],[24,82,.86,2.9],[39,71,1.15,4.3],[58,78,.83,3.0],[73,70,1.22,3.5],[88,84,.94,2.7]
+  ];
+  wrap.innerHTML=points.map(([x,y,s,d])=>`<i style="left:${x}%;top:${y}%;--s:${s};--d:${d}s"></i>`).join("");
+})();
+
+/* PREDICTION-FINAL-RENDERER */
+const cards=document.getElementById("cards");
+cards.innerHTML="";
+
+APP_CONFIG.predictions.forEach((p,i)=>{
+  const el=document.createElement("div");
+  el.className="pred-card";
+
+  el.innerHTML=`<div class="pred-inner">
+    <div class="front">
+      <span class="card-num">${i+1}</span>
+    </div>
+
+    <div class="back">
+      <div class="inside-photo-wrap">
+        <img class="inside-photo" src="${p.img}" alt="prediction ${i+1}">
+      </div>
+      <div class="inside-text">${p.text}</div>
+    </div>
+  </div>`;
+
+  el.addEventListener("click",()=>{
+    const opened=document.querySelector(".pred-card.open");
+
+    if(opened && opened!==el){
+      return;
+    }
+
+    el.classList.add("open");
+
+    const next=document.getElementById("predictionNext");
+    if(next){
+      next.disabled=false;
+      next.classList.remove("hidden");
+    }
+  });
+
+  cards.appendChild(el);
+});
+
+/* کیک + تشخیص ساده فوت */
+let blown=false, streamRef=null, rafRef=null;
+function launchConfetti(){
+  const wrap=document.getElementById("confetti");
+  wrap.innerHTML="";
+  for(let i=0;i<42;i++){
+    const el=document.createElement("i");
+    el.className="confetti-piece fly";
+    el.style.left=(8+Math.random()*84)+"%";
+    el.style.setProperty("--x",((Math.random()-.5)*180)+"px");
+    el.style.setProperty("--y",(160+Math.random()*420)+"px");
+    el.style.setProperty("--r",((Math.random()-.5)*900)+"deg");
+    el.style.background=["#fff","#6bc5ef","#ffd66b","#9b8cff","#ff8fa8"][i%5];
+    el.style.animationDelay=(Math.random()*.28)+"s";
+    wrap.appendChild(el);
+  }
+}
+function blowCandles(){
+  if(blown)return;
+  blown=true;
+  document.getElementById("candles").classList.add("blown");
+  document.getElementById("micStatus").textContent="آرزوت رو نگه دار... ✨";
+  launchConfetti();
+  document.getElementById("cakeNext").classList.remove("hidden");
+  if(streamRef) streamRef.getTracks().forEach(t=>t.stop());
+  if(rafRef) cancelAnimationFrame(rafRef);
+}
+document.querySelector(".cake-wrap").onclick=blowCandles;
+document.getElementById("micBtn").onclick=async()=>{
+  const status=document.getElementById("micStatus");
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    streamRef=stream;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AC(), src=ctx.createMediaStreamSource(stream), analyser=ctx.createAnalyser();
+    analyser.fftSize=512; src.connect(analyser);
+    const data=new Uint8Array(analyser.fftSize);
+    let hit=0;
+    const loop=()=>{
+      analyser.getByteTimeDomainData(data);
+      let sum=0;
+      for(const v of data){const x=(v-128)/128;sum+=x*x}
+      const rms=Math.sqrt(sum/data.length);
+      status.textContent="فوت کن...";
+      if(rms>.12) hit++; else hit=Math.max(0,hit-1);
+      if(hit>5){blowCandles();return}
+      rafRef=requestAnimationFrame(loop);
+    };
+    loop();
+  }catch(e){
+    status.textContent="دسترسی میکروفون فعال نشد؛ روی کیک بزن.";
+  }
+};
+
+/* نامه */
+document.getElementById("envelope").onclick=()=>{
+  document.getElementById("envelope").classList.add("open");
+  setTimeout(()=>document.getElementById("letterNext").classList.remove("hidden"),700);
+};
+
+/* هدیه نهایی */
+document.getElementById("internetCode").textContent=APP_CONFIG.internetCode;
+document.getElementById("unlockBtn").onclick=()=>{
+  const value=document.getElementById("passwordInput").value.trim();
+  const err=document.getElementById("passError");
+  if(value===APP_CONFIG.password){
+    err.textContent="";
+    document.getElementById("codeCard").classList.remove("hidden");
+  }else{
+    err.textContent="رمز درست نیست :)";
+    document.getElementById("passwordInput").animate(
+      [{transform:"translateX(0)"},{transform:"translateX(8px)"},{transform:"translateX(-8px)"},{transform:"translateX(0)"}],
+      {duration:280}
+    );
+  }
+};
+document.getElementById("guideBtn").onclick=()=>document.getElementById("guide").classList.toggle("hidden");
+
+/* انتخاب دوباره کارت */
+const rechooseCardBtn = document.getElementById("rechooseCardBtn");
+
+if(rechooseCardBtn){
+  rechooseCardBtn.addEventListener("click",()=>{
+    document.querySelectorAll("#prediction .pred-card.open")
+      .forEach(card=>card.classList.remove("open"));
+
+    const next = document.getElementById("predictionNext");
+    if(next){
+      next.disabled = true;
+    }
+
+    rechooseCardBtn.classList.remove("reset-spin");
+    void rechooseCardBtn.offsetWidth;
+    rechooseCardBtn.classList.add("reset-spin");
+
+    setTimeout(()=>{
+      rechooseCardBtn.classList.remove("reset-spin");
+    },450);
+  });
+}
+
+</script>
+</body>
+</html>

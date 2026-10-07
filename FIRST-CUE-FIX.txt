@@ -1,0 +1,2 @@
+Only the first lyric cue was changed from 7.551s to 8.5s.
+All remaining lyric timestamps are unchanged from the +3.2s V4 build.

@@ -1,0 +1,5 @@
+MY GIRL — FINAL SUBTITLE SYNC
+Song duration: 177.293061 seconds
+Cue count: 43
+The timestamps in index.html are baked from my-girl-subtitle-timings-FINAL.json.
+Browser localStorage does not override these timings in this build.

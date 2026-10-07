@@ -1,0 +1,7 @@
+Precision sync correction based on the uploaded backup.
+Only one lyric timestamp was changed:
+  "Do you pretend we were just friends?"
+  uploaded backup start: 22.100s
+  corrected start:       21.100s
+All other lyric timestamps and project assets are unchanged.
+Build: ULTRA-SYNC-JUST-FRIENDS-21.100
